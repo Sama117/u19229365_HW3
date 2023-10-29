@@ -1,0 +1,32 @@
+﻿
+@using HW3.Models
+@model List<HW3.Models.FileModel>
+@{
+    ViewBag.Title = "File Example";
+}
+
+<script src="~/Scripts/Viewer/fileViewer.js"></script>
+<div>
+    <h4>Documents of any file type</h4>
+</div>
+<div style="height: 400px; overflow: auto;">
+    <table class="table table-hover">
+        <thead style="position: sticky; top: 0; background-color: lightgrey;">
+            <tr>
+                <th width="75%">FILE NAME</th>
+                <th>DOWNLOAD</th>
+                <th>DELETE</th>
+            </tr>
+        </thead>
+        @foreach (FileModel file in Model)
+        {
+            <tr>
+                <td>@file.FileName</td>
+                <td class="t">@Html.ActionLink("Download", "DownloadFile", new { fileName = file.FileName }, new { @class = "btn btn-success btn-sm", style = "width: 150px;" })</td>
+                <td class="t">@Html.ActionLink("Delete", "DeleteFile", new { fileName = file.FileName }, new { @class = "btn btn-danger btn-sm", style = "width: 150px;" })</td>
+            </tr>
+
+
+        }
+    </table>
+</div>

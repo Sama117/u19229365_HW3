@@ -1,0 +1,302 @@
+﻿@model HW3.Models.HomeViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron" style="background-image: url('https://miro.medium.com/v2/resize:fit:1200/1*6Jp3vJWe7VFlFHZ9WhSJng.jpeg'); background-size: cover;">
+
+    <h1 style="color: lightgrey;">Welcome to the Library</h1>
+    <p class="lead"  style="color: lightgrey;">WELCOME TO THE WONDERFUL WORLD OF WORDS.</p>
+
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Maintain</h2>
+        <p>
+            GIVE OUR MAINTAIN PAGE A TRY.
+        </p>
+        <p>
+            @Html.ActionLink("Learn more »", "Maintain", "Maintain", null, new { @class = "btn btn-default" })
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Reports</h2>
+        <p> GIVE OUR MAINTAIN PAGE A TRY GIVVE OUR REPORTS PAGE A TRY.</p>
+        <p>@Html.ActionLink("Learn more »", "Reporting", "Reports", null, new { @class = "btn btn-default" })<</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Reports</h2>
+        <p> GIVE OUR MAINTAIN PAGE A TRY GIVE OUR ARCHIVES PAGE A TRY.</p>
+        <p>@Html.ActionLink("Learn more »",  "Archives", "Reports", null, new { @class = "btn btn-default" })</p>
+    </div>
+</div>
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Students</h2>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Students</h3>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="#" class="btn btn-primary create-link" data-url="@Url.Action("Create", "students")">Create</a>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Date Of Birth</th>
+                <th>Gender</th>
+                <th>Class</th>
+                <th>Points</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in Model.Students)
+            {
+                <tr>
+                    <td>@student.studentId</td>
+                    <td>@student.name</td>
+                    <td>@student.surname</td>
+                    <td>@student.birthdate</td>
+                    <td>@student.gender</td>
+                    <td>@(student.@class)</td>
+                    <td>@student.point</td>
+                    <td>
+                        <a href="#" class="btn btn-warning edit-link" data-url="@Url.Action("Edit", "students", new { id = student.studentId })">Edit</a>
+                        <a href="#" class="btn btn-info details-link" data-url="@Url.Action("Details", "students", new { id = student.studentId })">Details</a>
+                        <a href="#" class="btn btn-danger delete-link" data-url="@Url.Action("Delete", "students", new { id = student.studentId })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+            @if (Model.Students.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber - 1 })" aria-label="Previous">
+                        <span aria-hidden="true">Previous</span>
+                    </a>
+                </li>
+            }
+
+            @if (Model.Students.PageNumber > 10)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { studentPage = 1 })">1</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true">...</a>
+                </li>
+            }
+
+            @{
+                var startPage = Model.Students.PageNumber > 10 ? Model.Students.PageNumber - 4 : 1;
+                var endPage = Math.Min(startPage + 9, Model.Students.PageCount);
+            }
+
+            @for (var i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == Model.Students.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { studentPage = i })">@i</a>
+                </li>
+            }
+
+            @if (Model.Students.PageNumber + 10 <= Model.Students.PageCount)
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true">...</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageCount })">@Model.Students.PageCount</a>
+                </li>
+            }
+
+            @if (Model.Students.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber + 1 })" aria-label="Next">
+                        <span aria-hidden="true">Next</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<div class="container mt-5">
+    <h2 class="text-center">Books</h2>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Books</h3>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="#" class="btn btn-primary create-link" data-url="@Url.Action("Create", "books")">Create</a>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Book ID</th>
+                <th>Name</th>
+                <th>Page Count</th>
+                <th>Author</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model.Books)
+            {
+                string status = "Available";
+                var borrow = book.borrows.OrderByDescending(b => b.takenDate).FirstOrDefault();
+                if (borrow != null && borrow.broughtDate == null)
+                {
+                    status = "Out";
+                }
+                <tr>
+                    <td>@book.bookId</td>
+                    <td>@book.name</td>
+                    <td>@book.pagecount</td>
+                    <td>@book.authors.surname</td>
+                    <td>@book.types.name</td>
+                    <td>@status</td>
+                    <td>
+                        <a href="#" class="btn btn-warning edit-link" data-url="@Url.Action("Edit", "books", new { id = book.bookId })">Edit</a>
+                        <a href="#" class="btn btn-info details-link" data-url="@Url.Action("Details", "books", new { id = book.bookId })">Details</a>
+                        <a href="#" class="btn btn-danger delete-link" data-url="@Url.Action("Delete", "books", new { id = book.bookId })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+            @if (Model.Books.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { bookPage = Model.Books.PageNumber - 1 })" aria-label="Previous">
+                        <span aria-hidden="true">Previous</span>
+                    </a>
+                </li>
+            }
+
+            @if (Model.Books.PageNumber > 10)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { bookPage = 1 })">1</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true">...</a>
+                </li>
+            }
+
+            @{
+                var startPage1 = Model.Books.PageNumber > 10 ? Model.Books.PageNumber - 4 : 1;
+                var endPage1 = Math.Min(startPage + 9, Model.Books.PageCount);
+            }
+
+            @for (var i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == Model.Books.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { bookPage = i })">@i</a>
+                </li>
+            }
+
+            @if (Model.Books.PageNumber + 10 <= Model.Books.PageCount)
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true">...</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { bookPage = Model.Books.PageCount })">@Model.Books.PageCount</a>
+                </li>
+            }
+
+            @if (Model.Books.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { bookPage = Model.Books.PageNumber + 1 })" aria-label="Next">
+                        <span aria-hidden="true">Next</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<div id="myModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-content">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Your JavaScript code remains unchanged.
+        $(function () {
+            // Function to handle Edit link click event
+            $(".edit-link").click(function (e) {
+                e.preventDefault();
+                var url = $(this).data("url");
+
+                $.get(url, function (data) {
+                    $("#modal-content").empty();
+                    $("#modal-content").html(data);
+                    $("#myModal").modal("show");
+                });
+            });
+
+            // Function to handle form submission within the modal
+            $("#modal-content").on("submit", "form", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr("action");
+                var formData = form.serialize();
+
+                $.post(url, formData, function (data) {
+                    $("#myModal").modal("hide");
+                    location.reload();
+                });
+            });
+
+            // Function to handle other links (details, delete, create) within the modal
+            $(".details-link, .delete-link, .create-link, .create-lookup-link").click(function (e) {
+                e.preventDefault();
+                var url = $(this).data("url");
+
+                $.get(url, function (data) {
+                    $("#modal-content").empty();
+                    $("#modal-content").html(data);
+                    $("#myModal").modal("show");
+                });
+            });
+        });
+    </script>
+}
+
+

@@ -1,0 +1,97 @@
+﻿@model HW3.Models.FileModel
+
+@{
+    ViewBag.Title = "Borrowed Books Chart";
+}
+
+<link href="~/Content/Site.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/scripts/tinymce/tinymce.min.js"></script>
+@using (Html.BeginForm("SaveReport", "Reports", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.TextBoxFor(model => model.FileName, new { @class = "form-control", style = "width: 300px;", placeholder = "Add File Name" })
+    </div>
+    <div class="form-group">
+        @Html.DropDownListFor(model => model.Extension,
+              new[]
+              {
+                new SelectListItem() { Text = "DOCX", Value = ".docx" },
+                new SelectListItem() { Text = "PDF", Value = ".pdf", Selected = true },
+                new SelectListItem() { Text = "XPS", Value = ".xps" },
+                new SelectListItem() { Text = "HTML", Value = ".html" },
+                new SelectListItem() { Text = "MHTML", Value = ".mhtml" },
+                new SelectListItem() { Text = "RTF", Value = ".rtf" },
+                new SelectListItem() { Text = "XML", Value = ".xml" },
+                new SelectListItem() { Text = "TXT", Value = ".txt" },
+                new SelectListItem() { Text = "PNG", Value = ".png" },
+                new SelectListItem() { Text = "JPEG", Value = ".jpeg" },
+                new SelectListItem() { Text = "GIF", Value = ".gif" },
+                new SelectListItem() { Text = "BMP", Value = ".bmp" },
+                new SelectListItem() { Text = "TIFF", Value = ".tiff" },
+                new SelectListItem() { Text = "WMP", Value = ".wmp" }
+              },
+                new { @class = "form-control", style = "width: 150px;" })
+    </div>
+    <div style="padding-right: 15px; padding-left: 15px;">
+        <input type="submit" class="btn btn-primary" value="Save" style="width: 150px;" disabled />
+    </div>
+
+    <div id="chartContainer">
+        @Html.TextAreaFor(model => model.Content, new { id = "file-editor" })
+    </div>
+}
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+        var borrowData = @Html.Raw(Json.Encode(ViewBag.BorrowData));
+
+        var dataPoints = borrowData.map(function (item) {
+            return { y: item.Y, label: item.Label };
+        });
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            title: {
+                text: "Number of Times Each Book Has Been Borrowed"
+            },
+            animationEnabled: true,
+            axisX: {
+                title: "Books"
+            },
+            axisY: {
+                title: "Number of Borrows"
+            },
+            data: [
+                {
+                    type: "bar",
+                    name: "Borrows",
+                    dataPoints: dataPoints
+                }
+            ]
+        });
+
+        chart.render();
+    });
+
+    $(document).ready(function () {
+
+        var fileNameField = $("input[name='FileName']");
+        fileNameField.on("input", function () {
+            var fileName = fileNameField.val();
+            var saveButton = $("input[type='submit'][value='Save']");
+            if (fileName.length > 0) {
+                saveButton.prop("disabled", false);
+            } else {
+                saveButton.prop("disabled", true);
+            }
+        });
+    });
+</script>
